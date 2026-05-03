@@ -1,9 +1,5 @@
-/* ===== QazaqAI — App Logic v2 ===== */
 'use strict';
 
-// ═══════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════
 let state = {
   user: null,        // { name, username, level, goal }
   xp: 0,
@@ -22,9 +18,7 @@ let state = {
   flashMastered: 0,
 };
 
-// ═══════════════════════════════════════════
-//  PERSISTENCE
-// ═══════════════════════════════════════════
+
 function saveState() {
   localStorage.setItem('qazaqai_state', JSON.stringify(state));
 }
@@ -36,9 +30,6 @@ function loadState() {
   }
 }
 
-// ═══════════════════════════════════════════
-//  SPLASH + BOOT
-// ═══════════════════════════════════════════
 window.addEventListener('load', () => {
   loadState();
 
@@ -66,9 +57,7 @@ window.addEventListener('load', () => {
   }, 2200);
 });
 
-// ═══════════════════════════════════════════
-//  NAVIGATION
-// ═══════════════════════════════════════════
+
 function goto(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const t = document.getElementById(id);
@@ -80,7 +69,6 @@ function navGoto(id, el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if (el) el.classList.add('active');
 
-  // Refresh screens
   if (id === 'screen-home') refreshHome();
   if (id === 'screen-profile') refreshProfile();
   if (id === 'screen-flashcards') initFlashcards();
@@ -88,9 +76,7 @@ function navGoto(id, el) {
   if (id === 'screen-quiz') resetQuiz();
 }
 
-// ═══════════════════════════════════════════
-//  TOAST
-// ═══════════════════════════════════════════
+
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -100,9 +86,7 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('visible'), 2800);
 }
 
-// ═══════════════════════════════════════════
-//  AUTH
-// ═══════════════════════════════════════════
+
 const USERS_KEY = 'qazaqai_users';
 
 function getUsers() {
