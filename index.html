@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QazaqAI — Казахский с ИИ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+<!-- ░░ SPLASH ░░ -->
+<div class="splash" id="splash">
+  <div class="splash-orb"></div>
+  <div class="splash-content">
+    <div class="splash-logo">
+      <div class="splash-icon-wrap"><span class="splash-star">✦</span></div>
+      <span class="splash-wordmark">QazaqAI</span>
+    </div>
+    <div class="splash-tagline">Казахский язык × Искусственный интеллект</div>
+    <div class="splash-bar"><div class="splash-fill" id="splash-fill"></div></div>
+  </div>
+</div>
+
+<!-- ░░ APP ░░ -->
+<div class="app" id="app" style="display:none">
+
+  <!-- ████ SCREEN: AUTH ████ -->
+  <div class="screen active" id="screen-auth">
+    <div class="auth-bg">
+      <div class="auth-blob b1"></div>
+      <div class="auth-blob b2"></div>
+      <div class="auth-blob b3"></div>
+    </div>
+    <div class="auth-wrap">
+      <div class="auth-logo">
+        <span class="auth-star">✦</span>
+        <span>QazaqAI</span>
+      </div>
+      <h1 class="auth-headline">Сәлем!<br/><span class="highlight">Начни учить казахский</span></h1>
+      <p class="auth-sub">Живые диалоги с ИИ · Персональный прогресс · Геймификация</p>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="tab-btn active" id="tab-login" onclick="switchAuthTab('login')">Войти</button>
+        <button class="tab-btn" id="tab-reg" onclick="switchAuthTab('register')">Регистрация</button>
+      </div>
+
+      <!-- Login form -->
+      <div id="form-login" class="auth-form">
+        <div class="field-group">
+          <label>Имя пользователя</label>
+          <input type="text" id="login-name" placeholder="Например: nurhat" />
+        </div>
+        <div class="field-group">
+          <label>Пароль</label>
+          <input type="password" id="login-pass" placeholder="Твой пароль" />
+        </div>
+        <div class="auth-error" id="login-error"></div>
+        <button class="btn-primary full" onclick="doLogin()">Войти →</button>
+        <div class="auth-demo-hint">Для теста: <b>demo</b> / <b>demo123</b></div>
+      </div>
+
+      <!-- Register form -->
+      <div id="form-register" class="auth-form" style="display:none">
+        <div class="field-group">
+          <label>Как тебя зовут?</label>
+          <input type="text" id="reg-name" placeholder="Твоё имя" />
+        </div>
+        <div class="field-group">
+          <label>Имя пользователя</label>
+          <input type="text" id="reg-username" placeholder="Например: aibek_kz" />
+        </div>
+        <div class="field-group">
+          <label>Пароль</label>
+          <input type="password" id="reg-pass" placeholder="Минимум 6 символов" />
+        </div>
+        <div class="field-group">
+          <label>Твой уровень казахского</label>
+          <select id="reg-level">
+            <option value="A0">Полный новичок (A0)</option>
+            <option value="A1">Знаю несколько слов (A1)</option>
+            <option value="A2" selected>Базовый уровень (A2)</option>
+            <option value="B1">Средний уровень (B1)</option>
+          </select>
+        </div>
+        <div class="auth-error" id="reg-error"></div>
+        <button class="btn-primary full" onclick="doRegister()">Создать аккаунт →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ████ SCREEN: HOME ████ -->
+  <div class="screen" id="screen-home">
+    <div class="topbar glass">
+      <div class="topbar-left">
+        <div class="avatar-btn" id="home-avatar" onclick="goto('screen-profile')">АА</div>
+        <div>
+          <div class="greeting" id="home-greeting">Сәлем! 👋</div>
+          <div class="level-badge" id="home-level">Уровень: A2</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="streak-pill" id="home-streak">🔥 0 дней</div>
+      </div>
+    </div>
+
+    <div class="scroll-content">
+      <!-- XP Banner -->
+      <div class="xp-banner">
+        <div class="xp-banner-top">
+          <span class="xp-label">Прогресс к следующему уровню</span>
+          <span class="xp-num" id="home-xp-num">0 / 500 XP</span>
+        </div>
+        <div class="xp-track"><div class="xp-fill" id="home-xp-fill" style="width:0%"></div></div>
+        <div class="xp-gems">✦ <span id="home-gems">0</span> кристаллов</div>
+      </div>
+
+      <!-- Daily Quests -->
+      <div class="section-title">Задания на сегодня</div>
+      <div class="quests-list">
+        <div class="quest-card clickable" onclick="goto('screen-chat')">
+          <div class="quest-icon" style="background:linear-gradient(135deg,#6c63ff,#a78bfa)">💬</div>
+          <div class="quest-info">
+            <div class="quest-name">Разговор с ИИ</div>
+            <div class="quest-desc">Напиши 5 сообщений боту</div>
+          </div>
+          <div class="quest-progress-wrap">
+            <div class="quest-prog-track"><div class="quest-prog-fill" id="quest-chat-fill" style="width:0%"></div></div>
+            <span class="quest-count" id="quest-chat-count">0/5</span>
+          </div>
+        </div>
+        <div class="quest-card clickable" onclick="goto('screen-flashcards')">
+          <div class="quest-icon" style="background:linear-gradient(135deg,#f59e0b,#fbbf24)">🃏</div>
+          <div class="quest-info">
+            <div class="quest-name">Флеш-карточки</div>
+            <div class="quest-desc">Повтори 10 слов</div>
+          </div>
+          <div class="quest-progress-wrap">
+            <div class="quest-prog-track"><div class="quest-prog-fill" id="quest-flash-fill" style="width:0%"></div></div>
+            <span class="quest-count" id="quest-flash-count">0/10</span>
+          </div>
+        </div>
+        <div class="quest-card clickable" onclick="goto('screen-quiz')">
+          <div class="quest-icon" style="background:linear-gradient(135deg,#10b981,#34d399)">🧠</div>
+          <div class="quest-info">
+            <div class="quest-name">Квиз</div>
+            <div class="quest-desc">Ответь на 5 вопросов</div>
+          </div>
+          <div class="quest-progress-wrap">
+            <div class="quest-prog-track"><div class="quest-prog-fill" id="quest-quiz-fill" style="width:0%"></div></div>
+            <span class="quest-count" id="quest-quiz-count">0/5</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick modules -->
+      <div class="section-title">Режимы обучения</div>
+      <div class="modules-grid">
+        <div class="module-card" onclick="goto('screen-chat')">
+          <div class="module-glow" style="--gc:#6c63ff"></div>
+          <div class="module-icon">🤖</div>
+          <div class="module-name">ИИ-диалог</div>
+          <div class="module-desc">Gemini отвечает по-казахски</div>
+        </div>
+        <div class="module-card" onclick="goto('screen-flashcards')">
+          <div class="module-glow" style="--gc:#f59e0b"></div>
+          <div class="module-icon">🃏</div>
+          <div class="module-name">Слова</div>
+          <div class="module-desc">Флеш-карточки со словарём</div>
+        </div>
+        <div class="module-card" onclick="goto('screen-quiz')">
+          <div class="module-glow" style="--gc:#10b981"></div>
+          <div class="module-icon">🧠</div>
+          <div class="module-name">Квиз</div>
+          <div class="module-desc">Тест на знание языка</div>
+        </div>
+        <div class="module-card" onclick="goto('screen-grammar')">
+          <div class="module-glow" style="--gc:#f43f5e"></div>
+          <div class="module-icon">📖</div>
+          <div class="module-name">Грамматика</div>
+          <div class="module-desc">Правила и примеры</div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="section-title">Моя статистика</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-ico">📚</div>
+          <div class="stat-val" id="stat-words">0</div>
+          <div class="stat-lbl">Слов изучено</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico">💬</div>
+          <div class="stat-val" id="stat-msgs">0</div>
+          <div class="stat-lbl">Сообщений</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico">🏆</div>
+          <div class="stat-val" id="stat-xp">0</div>
+          <div class="stat-lbl">Всего XP</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico">🎯</div>
+          <div class="stat-val" id="stat-acc">–</div>
+          <div class="stat-lbl">Точность квиза</div>
+        </div>
+      </div>
+
+      <!-- Achievements -->
+      <div class="section-title">Достижения</div>
+      <div class="ach-strip" id="ach-strip">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <div class="nav-item active" onclick="navGoto('screen-home',this)"><span class="ni">🏠</span><span>Главная</span></div>
+      <div class="nav-item" onclick="navGoto('screen-chat',this)"><span class="ni">🤖</span><span>ИИ-чат</span></div>
+      <div class="nav-item" onclick="navGoto('screen-flashcards',this)"><span class="ni">🃏</span><span>Слова</span></div>
+      <div class="nav-item" onclick="navGoto('screen-profile',this)"><span class="ni">👤</span><span>Профиль</span></div>
+    </nav>
+  </div>
+
+  <!-- ████ SCREEN: CHAT ████ -->
+  <div class="screen" id="screen-chat">
+    <div class="chat-header glass">
+      <button class="back-btn" onclick="navGoto('screen-home',null)">←</button>
+      <div class="chat-ai-info">
+        <div class="ai-avatar-wrap">
+          <div class="ai-avatar-ring"></div>
+          <span class="ai-avatar-face">✦</span>
+        </div>
+        <div>
+          <div class="ai-name">QazaqBot <span class="gemini-tag">Gemini AI</span></div>
+          <div class="ai-status" id="ai-status">Онлайн · Готов к диалогу</div>
+        </div>
+      </div>
+      <div class="chat-xp-chip">+15 XP</div>
+    </div>
+
+    <!-- API Key Banner -->
+    <div class="api-banner" id="api-banner">
+      <div class="api-banner-inner">
+        <span>🔑</span>
+        <div>
+          <b>Введи Gemini API-ключ</b>
+          <div style="font-size:11px;opacity:.7">Бесплатно на aistudio.google.com</div>
+        </div>
+        <button class="api-mini-btn" onclick="openApiModal()">Настроить</button>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg ai">
+        <div class="msg-bubble">
+          Сәлем! Мен QazaqBot — сенің казахский тілін үйретуші AI-жолдасың! 🌟
+          <div class="msg-trans">Привет! Я QazaqBot — твой AI-помощник в изучении казахского!</div>
+        </div>
+      </div>
+      <div class="suggestion-row">
+        <button class="sug" onclick="sendSuggestion('Менің атым...')">Менің атым...</button>
+        <button class="sug" onclick="sendSuggestion('Қалайсыз?')">Қалайсыз?</button>
+        <button class="sug" onclick="sendSuggestion('Мен үйренгім келеді')">Мен үйренгім келеді</button>
+      </div>
+    </div>
+
+    <div class="feedback-panel" id="feedback-panel" style="display:none">
+      <div class="fb-title">✅ Разбор ИИ</div>
+      <div class="fb-text" id="feedback-text"></div>
+      <button class="fb-ok" onclick="closeFeedback()">Понял!</button>
+    </div>
+
+    <div class="chat-bar">
+      <input class="chat-input" id="chat-input" type="text" placeholder="Напиши по-казахски..." onkeydown="if(event.key==='Enter')sendMessage()" />
+      <button class="send-btn" onclick="sendMessage()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ████ SCREEN: FLASHCARDS ████ -->
+  <div class="screen" id="screen-flashcards">
+    <div class="topbar glass">
+      <button class="back-btn" onclick="navGoto('screen-home',null)">←</button>
+      <div class="page-title">Флеш-карточки 🃏</div>
+      <div class="flash-score">+10 XP</div>
+    </div>
+
+    <div class="flash-wrap">
+      <div class="flash-progress-row">
+        <span id="flash-idx">1 / 20</span>
+        <div class="flash-prog-track"><div class="flash-prog-fill" id="flash-prog-fill" style="width:5%"></div></div>
+        <span id="flash-streak-lbl">🔥 0</span>
+      </div>
+
+      <div class="card-scene" id="card-scene" onclick="flipCard()">
+        <div class="card-inner" id="card-inner">
+          <div class="card-face card-front">
+            <div class="card-lang-tag">KZ</div>
+            <div class="card-word" id="card-kz">сәлем</div>
+            <div class="card-tap-hint">нажми, чтобы перевернуть</div>
+          </div>
+          <div class="card-face card-back">
+            <div class="card-lang-tag">RU</div>
+            <div class="card-word" id="card-ru">привет</div>
+            <div class="card-example" id="card-ex"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flash-actions" id="flash-actions" style="display:none">
+        <button class="flash-btn hard" onclick="rateCard('hard')">😓 Не помню</button>
+        <button class="flash-btn ok" onclick="rateCard('ok')">🤔 С трудом</button>
+        <button class="flash-btn easy" onclick="rateCard('easy')">✅ Знаю!</button>
+      </div>
+
+      <div class="flash-info-row">
+        <span>Категория: <b id="flash-cat">Базовые слова</b></span>
+        <span id="flash-mastered">✦ <span id="flash-mastered-num">0</span> выучено</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ████ SCREEN: QUIZ ████ -->
+  <div class="screen" id="screen-quiz">
+    <div class="topbar glass">
+      <button class="back-btn" onclick="navGoto('screen-home',null)">←</button>
+      <div class="page-title">Квиз 🧠</div>
+      <div class="quiz-timer-wrap" id="quiz-timer-wrap">⏱ <span id="quiz-timer">30</span>с</div>
+    </div>
+
+    <div class="quiz-wrap" id="quiz-wrap">
+      <!-- Start screen -->
+      <div id="quiz-start">
+        <div class="quiz-hero-icon">🧠</div>
+        <h2 class="quiz-title">Проверь свои знания</h2>
+        <p class="quiz-sub">10 вопросов · Выбери правильный перевод</p>
+        <div class="quiz-mode-grid">
+          <div class="quiz-mode-card" onclick="startQuiz('translate')">
+            <div class="qm-icon">🔤</div>
+            <div class="qm-name">Перевод слов</div>
+            <div class="qm-desc">KZ → RU</div>
+          </div>
+          <div class="quiz-mode-card" onclick="startQuiz('fill')">
+            <div class="qm-icon">✏️</div>
+            <div class="qm-name">Вставь слово</div>
+            <div class="qm-desc">Заверши фразу</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question screen -->
+      <div id="quiz-question" style="display:none">
+        <div class="quiz-meta-row">
+          <span class="quiz-q-num" id="quiz-q-num">Вопрос 1/10</span>
+          <span class="quiz-score-lbl">⭐ <span id="quiz-score-live">0</span></span>
+        </div>
+        <div class="quiz-prog-track"><div class="quiz-prog-fill" id="quiz-prog-fill" style="width:0%"></div></div>
+        <div class="quiz-q-card">
+          <div class="quiz-q-label" id="quiz-q-label">Что означает слово?</div>
+          <div class="quiz-q-word" id="quiz-q-word">сәлем</div>
+        </div>
+        <div class="quiz-options" id="quiz-options"></div>
+      </div>
+
+      <!-- Result screen -->
+      <div id="quiz-result" style="display:none">
+        <div class="quiz-result-icon" id="quiz-result-icon">🏆</div>
+        <div class="quiz-result-score" id="quiz-result-score">8/10</div>
+        <div class="quiz-result-label" id="quiz-result-label">Отлично!</div>
+        <div class="quiz-result-xp" id="quiz-result-xp">+80 XP</div>
+        <button class="btn-primary" style="margin-top:20px" onclick="resetQuiz()">Сыграть ещё раз</button>
+        <button class="btn-secondary" style="margin-top:10px" onclick="navGoto('screen-home',null)">На главную</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ████ SCREEN: GRAMMAR ████ -->
+  <div class="screen" id="screen-grammar">
+    <div class="topbar glass">
+      <button class="back-btn" onclick="navGoto('screen-home',null)">←</button>
+      <div class="page-title">Грамматика 📖</div>
+    </div>
+    <div class="scroll-content">
+      <div class="grammar-intro">Изучай правила — практикуй в чате!</div>
+      <div id="grammar-list"><!-- filled by JS --></div>
+    </div>
+
+    <!-- Grammar detail modal -->
+    <div class="gmodal-overlay" id="gmodal" style="display:none">
+      <div class="gmodal-card">
+        <button class="gmodal-close" onclick="closeGrammar()">✕</button>
+        <div class="gmodal-title" id="gmodal-title"></div>
+        <div class="gmodal-body" id="gmodal-body"></div>
+        <button class="btn-primary" onclick="closeGrammar();navGoto('screen-chat',null)">Практиковаться →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ████ SCREEN: PROFILE ████ -->
+  <div class="screen" id="screen-profile">
+    <div class="profile-hero">
+      <button class="back-btn light" onclick="navGoto('screen-home',null)">←</button>
+      <div class="profile-avatar-big" id="profile-avatar-big">АА</div>
+      <div class="profile-name" id="profile-name">Пользователь</div>
+      <div class="profile-username" id="profile-username">@username</div>
+      <div class="profile-badges">
+        <span class="pbadge" id="profile-level-badge">A2</span>
+        <span class="pbadge streak" id="profile-streak-badge">🔥 0 дней</span>
+      </div>
+    </div>
+
+    <div class="scroll-content" style="margin-top:0">
+      <!-- Edit form -->
+      <div class="profile-section">
+        <div class="section-title">Редактировать профиль</div>
+        <div class="field-group">
+          <label>Имя</label>
+          <input type="text" id="edit-name" placeholder="Твоё имя" />
+        </div>
+        <div class="field-group">
+          <label>Цель (слов в день)</label>
+          <select id="edit-goal">
+            <option value="5">5 слов (легко)</option>
+            <option value="10" selected>10 слов (нормально)</option>
+            <option value="20">20 слов (интенсив)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Уровень</label>
+          <select id="edit-level">
+            <option value="A0">A0 — Новичок</option>
+            <option value="A1">A1 — Начальный</option>
+            <option value="A2" selected>A2 — Базовый</option>
+            <option value="B1">B1 — Средний</option>
+          </select>
+        </div>
+        <button class="btn-primary full" onclick="saveProfile()">Сохранить изменения</button>
+      </div>
+
+      <!-- Stats big -->
+      <div class="profile-section">
+        <div class="section-title">Полная статистика</div>
+        <div class="big-stats">
+          <div class="bstat"><span class="bstat-val" id="ps-xp">0</span><span class="bstat-lbl">XP</span></div>
+          <div class="bstat"><span class="bstat-val" id="ps-words">0</span><span class="bstat-lbl">Слов</span></div>
+          <div class="bstat"><span class="bstat-val" id="ps-msgs">0</span><span class="bstat-lbl">Сообщений</span></div>
+          <div class="bstat"><span class="bstat-val" id="ps-streak">0</span><span class="bstat-lbl">Стрик</span></div>
+        </div>
+        <div class="skill-rows">
+          <div class="skrow"><span>🗣 Разговорная речь</span><div class="skbar"><div class="skfill" id="sk-speak" style="width:0%"></div></div><span id="sk-speak-lbl">0%</span></div>
+          <div class="skrow"><span>📖 Чтение</span><div class="skbar"><div class="skfill" id="sk-read" style="width:0%"></div></div><span id="sk-read-lbl">0%</span></div>
+          <div class="skrow"><span>📝 Грамматика</span><div class="skbar"><div class="skfill" id="sk-gram" style="width:0%"></div></div><span id="sk-gram-lbl">0%</span></div>
+        </div>
+      </div>
+
+      <!-- Achievements full -->
+      <div class="profile-section">
+        <div class="section-title">Все достижения</div>
+        <div class="ach-full-grid" id="ach-full-grid"></div>
+      </div>
+
+      <!-- API Key -->
+      <div class="profile-section">
+        <div class="section-title">🔑 Gemini API-ключ</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Для работы реального ИИ нужен бесплатный ключ от Google AI Studio</p>
+        <div class="field-group">
+          <label>Ключ</label>
+          <input type="password" id="api-key-input" placeholder="AIzaSy..." />
+        </div>
+        <button class="btn-primary full" onclick="saveApiKey()">Сохранить ключ</button>
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" class="api-link">→ Получить ключ бесплатно</a>
+      </div>
+
+      <button class="btn-logout" onclick="doLogout()">Выйти из аккаунта</button>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- API Key Modal -->
+<div class="modal-overlay" id="api-modal" style="display:none">
+  <div class="modal-card">
+    <h3>Настройка Gemini AI</h3>
+    <p>Введи бесплатный API-ключ от Google AI Studio, чтобы QazaqBot отвечал по-настоящему!</p>
+    <div class="field-group">
+      <input type="password" id="api-modal-input" placeholder="AIzaSy..." />
+    </div>
+    <a href="https://aistudio.google.com/app/apikey" target="_blank" class="api-link">→ Получить ключ бесплатно</a>
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeApiModal()">Позже</button>
+      <button class="btn-primary" onclick="saveApiKeyFromModal()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
